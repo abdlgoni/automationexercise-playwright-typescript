@@ -67,8 +67,13 @@ export class LoginPage extends BasePage {
     await expect(this.LoggedInText).toBeVisible();
   }
 
-  async expectLoginFailed() {
+  async expectServerError() {
     await expect(this.ErrorLoginMessage).toBeVisible();
+  }
+
+  async expectBrowserValidation() {
+    await expect(this.page).toHaveURL("/login");
+    await expect(this.LoginButton).toBeVisible();
   }
 
   async expectSignupFailed() {

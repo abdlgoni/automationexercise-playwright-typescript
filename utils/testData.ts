@@ -1,18 +1,62 @@
 import { RegisterDetails } from "../pages/RegisterPage";
 
-export interface loginCredentials {
+export interface LoginCredentials {
   email: string;
   password: string;
 }
-
-export const validUser: loginCredentials = {
+// Positive case
+export const validUser: LoginCredentials = {
   email: process.env.VALID_EMAIL ?? "azis@example.com",
   password: process.env.VALID_PASSWORD ?? "azis123",
 };
 
-export const invalidUser: loginCredentials = {
+// Negative cases - server validation
+export const invalidUser: LoginCredentials = {
   email: "wrong@example.com",
   password: "Wrongpassword",
+};
+
+// Negative cases - browser validation
+export const whitespaceUser: LoginCredentials = {
+  email: " ",
+  password: " ",
+};
+
+export const emptyUser: LoginCredentials = {
+  email: "",
+  password: "",
+};
+
+export const emailOnlyUser: LoginCredentials = {
+  email: "azis@example.com",
+  password: "",
+};
+
+export const passwordOnlyUser: LoginCredentials = {
+  email: "",
+  password: "azis123",
+};
+
+export const invalidEmailFormatUser: LoginCredentials = {
+  email: "user.com",
+  password: "azis123",
+};
+
+export const serverValidationUsers: Record<string, LoginCredentials> = {
+  invalidCredentials: invalidUser,
+};
+
+export const browserValidationUsers: Record<string, LoginCredentials> = {
+  whitespaceInput: whitespaceUser,
+  emptyFields: emptyUser,
+  emailOnly: emailOnlyUser,
+  passwordOnly: passwordOnlyUser,
+  invalidEmailFormat: invalidEmailFormatUser,
+};
+
+export const allInvalidUsers: Record<string, LoginCredentials> = {
+  ...serverValidationUsers,
+  ...browserValidationUsers,
 };
 
 export const newUser: RegisterDetails = {
