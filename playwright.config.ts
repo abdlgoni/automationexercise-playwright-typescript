@@ -8,7 +8,7 @@ export default defineConfig({
   testDir: "./tests",
 
   /* Run tests in files in parallel */
-  // fullyParallel: true,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   reporter: [["html", { open: "never" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -25,7 +25,7 @@ export default defineConfig({
     {
       name: "no-auth",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: "**/auth/**",
+      testMatch: "**/without-auth/**",
     },
 
     {

@@ -132,6 +132,7 @@ automationexercise-playwright-ts/
 ├── pages/                       # Page Object classes
 │   ├── BasePage.ts              # Parent class — navigate, screenshot
 │   ├── HomePage.ts
+│   ├── DetailProductPage.ts
 │   ├── LoginPage.ts
 │   ├── RegisterPage.ts
 │   ├── ProductPage.ts
@@ -178,7 +179,7 @@ automationexercise-playwright-ts/
 ### Prasyarat
 
 Pastikan sudah terinstall:
-- [Node.js](https://nodejs.org) v24
+- [Node.js](https://nodejs.org) v20+
 - npm v9+
 
 ```bash

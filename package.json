@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:auth": "playwright test --project=no-auth",
+    "test:without-auth": "playwright test --project=no-auth",
     "test:loggedin": "playwright test --project=with-auth",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",

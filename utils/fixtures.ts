@@ -16,6 +16,16 @@ type PageFixtures = {
 };
 
 export const test = base.extend<PageFixtures>({
+  page: async ({ page }, use) => {
+    await page.route(
+      "**/*{googleads,doubleclick,adservice,analytics,pagead}**",
+      (route) => {
+        route.abort();
+      },
+    );
+    await use(page);
+  },
+
   homepage: async ({ page }, use) => {
     const homepage = new HomePage(page);
     await homepage.navigate();

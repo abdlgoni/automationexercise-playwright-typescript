@@ -1,5 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
+import { SidebarComponent } from "./components/SidebarComponent";
 
 export class HomePage extends BasePage {
   private readonly SignupLoginButton = this.page.getByRole("link", {
@@ -14,8 +15,11 @@ export class HomePage extends BasePage {
 
   private readonly loggedInText = this.page.getByText("Logged in as");
 
+  readonly sidebar: SidebarComponent;
+
   constructor(page: Page) {
     super(page);
+    this.sidebar = new SidebarComponent(page);
   }
 
   async clickSignupLoginButton() {

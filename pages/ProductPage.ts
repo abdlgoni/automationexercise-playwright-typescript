@@ -1,5 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
+import { SidebarComponent } from "./components/SidebarComponent";
 
 export interface ProductDetail {
   name: string;
@@ -8,6 +9,9 @@ export interface ProductDetail {
 
 export class ProductPage extends BasePage {
   // ── Locators ──────────────────────────────────────────────────────────────
+
+  // Component
+  readonly sidebar: SidebarComponent;
 
   // Static — dipakai di lebih dari satu method
   private readonly modal = this.page.locator(".modal-dialog");
@@ -24,11 +28,21 @@ export class ProductPage extends BasePage {
 
   private readonly productList = this.page.locator(".single-products");
 
+  private readonly viewProductLinks = this.page.locator(
+    '.choose a[href^="/product_details/"]',
+  );
+
+  private readonly filterTitle = this.page.locator(
+    ".features_items .title.text-center",
+  );
+
   // Dynamic — bergantung index, inline di method yang memakainya
   private productCard = (index: number) => this.productList.nth(index);
+  private viewProductLink = (index: number) => this.viewProductLinks.nth(index);
 
   constructor(page: Page) {
     super(page);
+    this.sidebar = new SidebarComponent(page);
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
@@ -53,6 +67,43 @@ export class ProductPage extends BasePage {
         hasText: productName,
       }),
     ).toBeVisible();
+  }
+
+  /** Verifikasi hasil search mengandung nama produk */
+  async expectNoProductsFound() {
+    const productItems = this.productList.locator(".productinfo");
+    await expect(productItems).toHaveCount(0);
+  }
+
+  /** Verifikasi filter kategori berhasil diterapkan */
+  async expectCategoryFilterApplied(gender: string, subCategory: string) {
+    // 1. Validasi URL berubah ke endpoint category
+    await expect(this.page).toHaveURL(new RegExp(`/category_products/\\d+`));
+
+    // 2. Validasi judul konten mencerminkan kategori yang dipilih
+    await expect(this.filterTitle).toHaveText(
+      new RegExp(`${gender} - ${subCategory} Products`, "i"),
+    );
+
+    // 3. Validasi produk berhasil dimuat
+    await expect(this.productList.first()).toBeVisible();
+  }
+
+  /** Verifikasi filter brand berhasil diterapkan */
+  async expectBrandFilterApplied(brandName: string) {
+    // 1. Validasi URL berubah ke endpoint brand yang tepat
+    const encodedBrand = encodeURIComponent(brandName);
+    await expect(this.page).toHaveURL(
+      new RegExp(`/brand_products/${encodedBrand}`),
+    );
+
+    // 2. Validasi judul konten mencerminkan brand yang dipilih
+    await expect(this.filterTitle).toHaveText(
+      new RegExp(`Brand - ${brandName} Products`, "i"),
+    );
+
+    // 3. Validasi produk berhasil dimuat
+    await expect(this.productList.first()).toBeVisible();
   }
 
   // ── Data Capture ──────────────────────────────────────────────────────────
@@ -109,7 +160,6 @@ export class ProductPage extends BasePage {
 
   /**
    * Tambah beberapa produk ke cart sekaligus.
-   * Produk non-terakhir → Continue Shopping, produk terakhir → View Cart.
    */
   async addMultipleToCart(indexes: number[]) {
     const lastIndex = indexes[indexes.length - 1];
@@ -129,9 +179,7 @@ export class ProductPage extends BasePage {
 
   /** Klik View Product untuk masuk ke detail produk */
   async clickViewProduct(index: number = 0) {
-    await this.productCard(index)
-      .getByRole("link", { name: "View Product" })
-      .click();
+    await this.viewProductLink(index).click();
   }
 
   /** Isi search input dan submit */

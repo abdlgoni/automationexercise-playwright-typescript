@@ -19,7 +19,7 @@ export class DetailProductPage extends BasePage {
 
   //availability
   private readonly productAvaibility = this.container.locator("p", {
-    hasText: "Avaibility:",
+    hasText: "Availability:",
   });
 
   //kondisi product
